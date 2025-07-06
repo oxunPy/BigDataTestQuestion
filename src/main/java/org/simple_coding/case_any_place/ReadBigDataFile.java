@@ -98,7 +98,7 @@ public class ReadBigDataFile {
     private void printOutput(List<List<RowData>> groups) {
         String outPath = Paths.get("output.txt").toString();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outPath, StandardCharsets.UTF_8))) {
-            writer.write("Получившиееся число групп с более чем одним элементом = " + numberOfGroupsMoreThan2(groups));
+            writer.write("Получившиеся число групп с более чем одним элементом = " + numberOfGroupsMoreThan2(groups));
             writer.newLine();
             int groupNum = 1;
             for (List<RowData> group : groups) {
