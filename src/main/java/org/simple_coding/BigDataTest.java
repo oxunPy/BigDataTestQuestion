@@ -5,11 +5,20 @@ import org.simple_coding.common.ExecutingTimeInSeconds;
 
 public class BigDataTest {
     public static void main(String[] args) {
+        String fileName;
+        if(args.length > 1) {
+            fileName = args[0];
+        } else {
+            fileName = "C:/Users/acer/Downloads/lng-4.txt/lng.txt";
+        }
 
-        ReadBigDataFile readerBigData = new ReadBigDataFile("C:/Users/acer/Downloads/lng-4.txt/lng.txt");
+        if(fileName == null || fileName.trim().isEmpty()) {
+            System.out.println("Filename not found");
+            return;
+        }
+
+        ReadBigDataFile readerBigData = new ReadBigDataFile(fileName);
         int doneInSeconds = ExecutingTimeInSeconds.callMethod(readerBigData::divideGroupsFileRows);
-        System.out.println("Задача выполнена за " + doneInSeconds + " секунд");
+        System.out.println("Task is done in " + doneInSeconds + " seconds");
     }
-
-
 }
