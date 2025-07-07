@@ -3,6 +3,8 @@ package org.simple_coding;
 import org.simple_coding.case_any_place.ReadBigDataFile;
 import org.simple_coding.common.ExecutingTimeInSeconds;
 
+import java.io.File;
+
 public class BigDataTest {
     public static void main(String[] args) {
         String fileName;
@@ -12,8 +14,8 @@ public class BigDataTest {
             fileName = "C:/Users/acer/Downloads/lng-4.txt/lng.txt";
         }
 
-        if(fileName == null || fileName.trim().isEmpty()) {
-            System.out.println("Filename not found");
+        if(fileName == null || fileName.trim().isEmpty() || !new File(fileName).exists()) {
+            System.out.println("File not found");
             return;
         }
 
