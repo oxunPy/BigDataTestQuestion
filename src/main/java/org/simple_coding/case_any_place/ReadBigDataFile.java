@@ -9,21 +9,18 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ReadBigDataFile {
-    List<RowData> allUniqueRows;
+    Set<RowData> allUniqueRows;
     String fileName;
-    HashMapList<String, Integer> colRowsMap;       // column to row indexes map
     UnionFind unionFind;
 
     public ReadBigDataFile(String fileName) {
-        allUniqueRows = new ArrayList<>();
-        colRowsMap = new HashMapList<>();
+        allUniqueRows = new HashSet<>();
         this.fileName = fileName;
     }
 
     public void divideGroupsFileRows() {
         makeFileRowsByReading();
-        collectColumnRowsInMap();
-        unionGroups();
+        unionGroups(collectColumnRowsInMap());
 
         List<List<RowData>> groups = groupRootsList();
         sortGroups(groups);
@@ -34,39 +31,40 @@ public class ReadBigDataFile {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line = null;
-            int lineNumber = 0;
+            int idNumber = -1;
             while((line = reader.readLine()) != null) {
-                lineNumber++;
-                RowData currentRow = makeRowData(line, lineNumber);
+                RowData currentRow = makeRowData(line, idNumber + 1);
                 if(currentRow == null) continue;
 
                 allUniqueRows.add(currentRow);
+                idNumber++;
             }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    private void collectColumnRowsInMap() {
-        for(int i = 0; i < allUniqueRows.size(); i++) {
-            RowData row = allUniqueRows.get(i);
+    private HashMapList<String, Integer> collectColumnRowsInMap() {
+        HashMapList<String, Integer> colRowsMap = new HashMapList<>();
+        for(RowData row: allUniqueRows) {
             for(int j = 0; j < row.sizeColumns(); j++) {
                 if(row.isValidColAtI(j)) {
                     String col = row.getColumnAtI(j);
                     String key = col + ":" + j;
-                    colRowsMap.put(key, i);
+                    colRowsMap.put(key, row.getId());
                 }
             }
         }
+
+        return colRowsMap;
     }
 
-    private void unionGroups() {
+    private void unionGroups(HashMapList<String, Integer> colRowsMap) {
         unionFind = new UnionFind(allUniqueRows.size());
         for(String key : colRowsMap.keySet()) {
             List<Integer> groupRowsIdx = colRowsMap.get(key);
             for(int i = 1; i < groupRowsIdx.size(); i++) {
                 unionFind.union(groupRowsIdx.get(i - 1), groupRowsIdx.get(i));
-                allUniqueRows.get(i).parent = allUniqueRows.get(i - 1);
             }
         }
     }
@@ -74,9 +72,9 @@ public class ReadBigDataFile {
     private List<List<RowData>> groupRootsList() {
         HashMapList<Integer, RowData> groupMap = new HashMapList<>();
 
-        for(int i = 0; i < allUniqueRows.size(); i++) {
-            int root = unionFind.find(i);
-            groupMap.put(root, allUniqueRows.get(i));
+        for(RowData row : allUniqueRows) {
+            int root = unionFind.find(row.getId());
+            groupMap.put(root, row);
         }
 
         return new ArrayList<>(groupMap.values());

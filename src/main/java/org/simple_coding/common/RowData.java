@@ -6,8 +6,6 @@ public class RowData implements Validator {
     private int id;
     private String rowText;
     private String[] columns;
-    private static final RowValidator rowValidator = new RowValidator();
-    public RowData parent;
 
     public RowData(int id, String rowText) {
         this.id = id;
@@ -20,7 +18,7 @@ public class RowData implements Validator {
             return false;
 
         for(int i = 0; i < Math.min(sizeColumns(), under.sizeColumns()); i++) {
-            if(rowValidator.emptyOrBlank(columns[i]) || rowValidator.emptyOrBlank(under.getColumnAtI(i)))
+            if(RowValidator.emptyOrBlank(columns[i]) || RowValidator.emptyOrBlank(under.getColumnAtI(i)))
                 continue;
 
             if(columns[i].equals(under.getColumnAtI(i))) {
@@ -52,7 +50,7 @@ public class RowData implements Validator {
     }
 
     public boolean isValidColAtI(int i) {
-        return !rowValidator.emptyOrBlank(columns[i]);
+        return !RowValidator.emptyOrBlank(columns[i]);
     }
 
 
@@ -67,6 +65,6 @@ public class RowData implements Validator {
 
     @Override
     public boolean isValid() {
-        return !rowValidator.includesInvalidColumn(columns);
+        return !RowValidator.includesInvalidColumn(columns);
     }
 }
