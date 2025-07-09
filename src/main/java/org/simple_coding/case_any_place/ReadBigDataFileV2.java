@@ -63,7 +63,7 @@ public class ReadBigDataFileV2 {
 
                 for(int col = 0; col < parts.length; col++) {
                     if(RowValidator.emptyOrBlank(parts[col]))
-                        fileData[row][col] = 0;
+                        fileData[row][col] = -1;        // -1 as null
                     else
                         fileData[row][col] = Double.parseDouble(parts[col].replaceAll("\"", ""));
                 }
@@ -78,7 +78,7 @@ public class ReadBigDataFileV2 {
         for(int col = 0; col < maxColNum; col++) {
             HashMap<Double, Integer> firstSameCols = new HashMap<>();
             for(int row = 0; row < maxRowNum; row++) {
-                if(fileData[row][col] == 0.0) continue;
+                if(fileData[row][col] == 0.0 || fileData[row][col] == -1) continue;
 
                 if(firstSameCols.containsKey(fileData[row][col])) {
                     unionFind.union(firstSameCols.get(fileData[row][col]), row);
@@ -141,10 +141,20 @@ public class ReadBigDataFileV2 {
 
     String rowToString(double[] row) {
         StringBuilder sb = new StringBuilder();
-        for(double num : row) {
-            sb.append(num);
-            sb.append(";");
+        for(int i = 0; i < row.length; i++) {
+            double num = row[i];
+            if(num == 0.0) continue;
+
+            if(num == -1)
+                sb.append("\"\"");
+            else if(num == (long) num)
+                sb.append(String.format("\"%d\"", (long)num));
+            else
+                sb.append(String.format("\"%.2f\"", num));
+
+            if(i != row.length - 1) sb.append(";");
         }
+
 
         return sb.toString();
     }

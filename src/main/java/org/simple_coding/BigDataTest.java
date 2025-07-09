@@ -11,7 +11,7 @@ public class BigDataTest {
         if(args.length >= 1) {
             fileName = args[0];
         } else {
-            fileName = "C:/Users/acer/Downloads/lng-4 (1).txt/lng.txt";
+            fileName = "C:/Users/acer/Downloads/lng-4/lng.txt";
         }
 
         if(fileName == null || fileName.trim().isEmpty() || !new File(fileName).exists()) {
