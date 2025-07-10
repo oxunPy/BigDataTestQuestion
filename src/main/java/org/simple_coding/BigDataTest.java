@@ -1,6 +1,6 @@
 package org.simple_coding;
 
-import org.simple_coding.case_any_place.ReadBigDataFileV2;
+import org.simple_coding.case_any_place.ReadBigDataFileV3;
 import org.simple_coding.common.ExecutingTimeInSeconds;
 
 import java.io.File;
@@ -14,13 +14,13 @@ public class BigDataTest {
             fileName = "C:/Users/acer/Downloads/lng-4/lng.txt";
         }
 
-        if(fileName == null || fileName.trim().isEmpty() || !new File(fileName).exists()) {
+        if (fileName == null || fileName.trim().isEmpty() || !new File(fileName).exists()) {
             System.out.println("File not found");
             return;
         }
 
-        ReadBigDataFileV2 readerBigData = new ReadBigDataFileV2(fileName);
-        int doneInSeconds = ExecutingTimeInSeconds.callMethod(readerBigData::divideGroupsFileRows);
+        ReadBigDataFileV3 readerBigData = new ReadBigDataFileV3(fileName);
+        int doneInSeconds = ExecutingTimeInSeconds.callMethod(() -> readerBigData.divideGroupsFileRows(true));
         System.out.println("Task is done in " + doneInSeconds + " seconds");
     }
 }

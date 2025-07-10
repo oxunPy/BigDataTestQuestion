@@ -15,11 +15,28 @@ public class RowValidator {
         return emptySizes == columns.length;
     }
 
+    public static boolean invalidLine(String line) {
+        int numQuotMark = 0;
+
+        for(int i = 0; i < line.length(); i++) {
+            if(line.charAt(i) == ';') {
+                if(isOdd(numQuotMark)) {
+                    return true;
+                }
+                numQuotMark = 0;
+            } else if(line.charAt(i) == '"') {
+                numQuotMark++;
+            }
+        }
+
+        return isOdd(numQuotMark);
+    }
+
     public static boolean emptyOrBlank(String col) {
         return col == null || col.isEmpty() || col.equals("\"\"");
     }
 
-    private static int numberOfCharsIn(String txt, char c) {
+    public static int numberOfCharsIn(String txt, char c) {
         int count = 0;
         for(int i = 0; i < txt.length(); i++) {
             if(txt.charAt(i) == c) count++;
